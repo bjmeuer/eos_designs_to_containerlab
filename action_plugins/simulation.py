@@ -66,7 +66,7 @@ class ActionModule(ActionBase):
                 if batch_count >= int(containerlab_deploy_startup_batches):
                     node_string += "      startup-delay: "+str((batch_count // int(containerlab_deploy_startup_batches)) * 300)+"\n"
                 
-                if node_hostvars_exist and kind in ["ceos","veos"]:
+                if node_hostvars_exist and kind in ["ceos", "veos", "arista_ceos", "arista_veos"]:
                     mgmt_ipv4 = ""
                     node_sim_ztp = sim_ztp
                     if "containerlab" in hostvars[node]:
@@ -93,7 +93,7 @@ class ActionModule(ActionBase):
                     if containerlab_enforce_startup_config:
                         node_string += "      enforce-startup-config: true\n"
                     
-                    if (kind in ["ceos","veos"]) and (containerlab_custom_interface_mapping or (containerlab_onboard_to_cvp_token is not None) or containerlab_serial_sysmac):
+                    if (kind in ["ceos", "veos", "arista_ceos", "arista_veos"]) and (containerlab_custom_interface_mapping or (containerlab_onboard_to_cvp_token is not None) or containerlab_serial_sysmac):
                         if containerlab_ceos_copy_to_flash:
                             node_string += "      extras:\n"
                             node_string += "        ceos-copy-to-flash:\n"
@@ -286,9 +286,9 @@ class ActionModule(ActionBase):
             # if there are more than 1 clab host defined, create a list on which host which switch will run on
             if host_count > 1:
                 position = host_distribute_counter % (host_count)
-                distributed_nodes[(list(distributed_nodes)[position])][switch] = {"kind": "ceos", "image":sim_ceos_version}
+                distributed_nodes[(list(distributed_nodes)[position])][switch] = {"kind": "arista_ceos", "image":sim_ceos_version}
             else:
-                distributed_nodes[(list(distributed_nodes)[0])][switch] = {"kind": "ceos", "image":sim_ceos_version}
+                distributed_nodes[(list(distributed_nodes)[0])][switch] = {"kind": "arista_ceos", "image":sim_ceos_version}
             host_distribute_counter += 1
 
 
@@ -360,7 +360,7 @@ class ActionModule(ActionBase):
                                             ext_connections.append(connection)
                                     
                                     # Add the external nodes to a set so that they can be distributed to the simulation hosts afterwards
-                                    node_type = {"kind": "ceos", "image":sim_ceos_version}
+                                    node_type = {"kind": "arista_ceos", "image":sim_ceos_version}
                                     if peer_type in sim_external_nodes_map and not sim_external_node_one_container:
                                         node_type = sim_external_nodes_map[peer_type]
                                     
